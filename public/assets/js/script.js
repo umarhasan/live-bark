@@ -114,6 +114,9 @@ var formData = {
     email: '',
     zip: '',
     address: '',
+    city: '', // New field
+    state: '', // New field
+    country: '',
     contact: '',
 
 };
@@ -257,6 +260,30 @@ function validate(step) {
         } else {
             $("#name-error").text("");
         }
+        // Validate new fields
+        formData.city = $("input[name='city']").val();
+        if (!formData.city) {
+            valid = false;
+            $("#name-error").text("Please enter your city.");
+        } else {
+            $("#name-error").text("");
+        }
+
+        formData.state = $("input[name='state']").val();
+        if (!formData.state) {
+            valid = false;
+            $("#name-error").text("Please enter your state/province.");
+        } else {
+            $("#name-error").text("");
+        }
+
+        formData.country = $("input[name='country']").val();
+        if (!formData.country) {
+            valid = false;
+            $("#name-error").text("Please enter your country.");
+        } else {
+            $("#name-error").text("");
+        }
 
     }
     return valid;
@@ -294,6 +321,10 @@ function showStep(step) {
     $("input[name='Email']").val(userSelections.email);
     $("input[name='Zip']").val(userSelections.zip);
     $("textarea").val(userSelections.address);
+    // Repopulate new fields
+    $("input[name='city']").val(formData.city);
+    $("input[name='state']").val(formData.state);
+    $("input[name='country']").val(formData.country);
     if (step === 9) {
 
         setTimeout(function() {

@@ -148,6 +148,7 @@
                                 </div>
                                 <input type="button" name="next" class="next action-button" value="Next" />
                             </fieldset>
+                            {{-- First other --}}
                             <fieldset>
                                 <div class="form-card">
                                     <div class="row">
@@ -189,12 +190,23 @@
                                             <input type="radio" id="charity" name="business" value="Charity/non-profit">
                                             <label for="charity">Charity/non-profit</label>
                                         </div>
+
+                                        <!-- Other Option -->
+                                        <div class="field-div">
+                                            <input type="radio" id="other_business" name="business" value="Other" onclick="toggleOtherInput('business')">
+                                            <label for="other_business">Other</label>
+                                        </div>
+                                        <div class="field-div" id="other_business_input" style="display: none;">
+                                            <input type="text" id="other_business_value" name="other_business_value" placeholder="Please specify..." />
+                                        </div>
+
                                     </div>
                                     <div class="error-message" id="daily-error"></div>
                                 </div> <input type="button" name="next" class="next action-button" value="Next" />
                                 <input type="button" name="previous" class="previous action-button-previous"
                                     value="Previous" />
                             </fieldset>
+
                             <fieldset>
                                 <div class="form-card">
                                     <div class="row">
@@ -239,12 +251,23 @@
                                                 value="Retail/consumer goods">
                                             <label for="consumer">Retail/consumer goods</label>
                                         </div>
+
+
+                                        <!-- Other Option -->
+                                        <div class="field-div">
+                                            <input type="radio" id="other_industry" name="industry" value="Other" onclick="toggleOtherInput('industry')">
+                                            <label for="other_industry">Other</label>
+                                        </div>
+                                        <div class="field-div" id="other_industry_input" style="display: none;">
+                                            <input type="text" id="other_industry_value" name="other_industry_value" placeholder="Please specify..." />
+                                        </div>
                                     </div>
                                     <div class="error-message" id="bed-error"></div>
                                 </div> <input type="button" name="next" class="next action-button" value="Next" />
                                 <input type="button" name="previous" class="previous action-button-previous"
                                     value="Previous" />
                             </fieldset>
+
                             <fieldset>
                                 <div class="form-card">
                                     <div class="row">
@@ -279,12 +302,21 @@
                                             <label for="3bathroom">I would like to discuss this with the
                                                 professional</label>
                                         </div>
+                                        <!-- Other Option -->
+                                        <div class="field-div">
+                                            <input type="radio" id="other_live_website" name="live_website" value="Other" onclick="toggleOtherInput('live_website')">
+                                            <label for="other_live_website">Other</label>
+                                        </div>
+                                        <div class="field-div" id="other_live_website_input" style="display: none;">
+                                            <input type="text" id="other_live_website_value" name="other_live_website_value" placeholder="Please specify..." />
+                                        </div>
                                     </div>
                                     <div class="error-message" id="bath-error"></div>
                                 </div> <input type="button" name="next" class="next action-button" value="Next" />
                                 <input type="button" name="previous" class="previous action-button-previous"
                                     value="Previous" />
                             </fieldset>
+
                             <fieldset>
                                 <div class="form-card">
                                     <div class="row">
@@ -317,12 +349,22 @@
                                             <input type="radio" id="rec5" name="budget" value="£5,000 or more">
                                             <label for="rec5">£5,000 or more</label>
                                         </div>
+
+                                        <!-- Other Option -->
+                                        <div class="field-div">
+                                            <input type="radio" id="other_budget" name="budget" value="Other" onclick="toggleOtherInput('budget')">
+                                            <label for="other_budget">Other</label>
+                                        </div>
+                                        <div class="field-div" id="other_budget_input" style="display: none;">
+                                            <input type="text" id="other_budget_value" name="other_budget_value" placeholder="Please specify..." />
+                                        </div>
                                     </div>
                                     <div class="error-message" id="rec-error"></div>
                                 </div> <input type="button" name="next" class="next action-button" value="Next" />
                                 <input type="button" name="previous" class="previous action-button-previous"
                                     value="Previous" />
                             </fieldset>
+
                             <fieldset>
                                 <div class="form-card">
                                     <div class="row">
@@ -354,6 +396,15 @@
                                             <input type="radio" id="hire5" name="hire"
                                                 value="Im planning and researching">
                                             <label for="hire5">I'm planning and researching</label>
+                                        </div>
+
+                                        <!-- Other Option -->
+                                        <div class="field-div">
+                                            <input type="radio" id="hire4" name="hire" value="Other" onclick="toggleOtherInput('hire4')">
+                                            <label for="hire5">Other</label>
+                                        </div>
+                                        <div class="field-div" id="other_hire4_input" style="display: none;">
+                                            <input type="text" id="other_hire4_value" name="hire" placeholder="Please specify..." />
                                         </div>
                                     </div>
                                     <div class="error-message" id="hire-error"></div>
@@ -412,7 +463,17 @@
                                         <div class="field-div">
                                             <input name="address" rows="3" placeholder="Enter Your Address" class="input-textarea"></input>
                                         </div>
+                                        <div class="field-div">
+                                            <input type="text" class="input-text" name="city" placeholder="Enter Your City" />
+                                        </div>
 
+                                        <div class="field-div">
+                                            <input type="text" class="input-text" name="state" placeholder="Enter Your State" />
+                                        </div>
+
+                                        <div class="field-div">
+                                            <input type="text" class="input-text" name="country" placeholder="Enter Your Country" />
+                                        </div>
                                     </div>
                                     <div class="error-message" id="name-error"></div>
                                 </div>
