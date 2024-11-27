@@ -210,7 +210,7 @@
                                     <li><strong>Industry:</strong>&nbsp;{{ $lead->industry }}</li>
                                     <li><strong>Live Website:</strong>&nbsp;{{ $lead->live_website }}</li>
                                 </ul>
-                                <p><strong>Credit:</strong> 25</p>
+                                <p><strong>Credit:</strong>{{ isset($lead->service) ? $lead->service->credit : 'No Credit' }}</p>
                                 <div>
                                     <button class="btn btn-primary">Contact {{ $lead->name }}</button>
                                     <button class="btn btn-secondary btn-not-interested">Not interested</button>
@@ -249,7 +249,7 @@
                                 <li><strong>Industry:</strong>&nbsp;{{ $lead->industry }}</li>
                                 <li><strong>Live Website:</strong>&nbsp;{{ $lead->live_website }}</li>
                             </ul>
-                            <p><strong>Credit:</strong> 25</p>
+                            <p><strong>Credit:</strong>{{ isset($lead->service) ? $lead->service->credit : 'No Credit' }}</p>
                             <div>
                                 <button class="btn btn-primary">Contact {{ $lead->name }}</button>
                                 <button class="btn btn-secondary btn-not-interested">Not interested</button>
