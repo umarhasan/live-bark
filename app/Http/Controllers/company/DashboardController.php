@@ -28,25 +28,53 @@ class DashboardController extends Controller
     {
         $this->middleware(['auth']);
     }
-        public function index(){
-            return view('company.dashboard');
-        }
-        public function company_leads_genrate(Request $request) {
-        $query = LeadGenrate::with('service','service.leadService')->whereNull('assign_company_id');
+    public function index(){
+        return view('company.dashboard');
+    }
 
-        // Filter by name if provided
-        if ($request->has('name')) {
+    public function company_leads_genrate(Request $request) {
+        // Initialize the query to get all leads (unfiltered) by default
+        $query = LeadGenrate::with('service', 'service.leadService')->whereNull('assign_company_id');
+
+        // Apply filters if provided for all leads (including total leads)
+        if ($request->has('name') && $request->name != '') {
             $query->where('name', 'like', '%' . $request->name . '%');
         }
 
-        // Filter by status if provided
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
+        // Get all leads based on the applied filters
+        $leads = $query->get();
+
+        // Filter today's leads separately and apply the 'name' filter specifically for today's leads
+        $today = now()->toDateString();
+        $todaysLeadsQuery = LeadGenrate::whereDate('created_at', $today)->whereNull('assign_company_id');
+
+        // Apply the name filter for today's leads if provided
+        if ($request->has('name') && $request->name != '') {
+            $todaysLeadsQuery->where('name', 'like', '%' . $request->name . '%');
         }
 
-        $leads = $query->get();
-        return view('company.lead_genrate', compact('leads'));
+        // Get today's leads with the filter applied
+        $todaysLeads = $todaysLeadsQuery->get();
+
+        // Filtered leads count
+        $filteredLeadsCount = $leads->count();
+
+        // Get total leads excluding today's leads, applying the same filters
+        $totalLeadsQuery = LeadGenrate::with('service', 'service.leadService')
+            ->whereNull('assign_company_id')
+            ->whereDate('created_at', '!=', $today);
+
+        // Apply the name filter for total leads if provided
+        if ($request->has('name') && $request->name != '') {
+            $totalLeadsQuery->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        // Get the latest 5 total leads excluding today's leads
+        $totalLeads = $totalLeadsQuery->latest()->take(5)->get();
+
+        return view('company.lead_genrate', compact('leads', 'todaysLeads', 'filteredLeadsCount', 'totalLeads'));
     }
+
 
     public function purchaseleads(){
             $user_id = Auth::user()->id;
@@ -59,13 +87,6 @@ class DashboardController extends Controller
         return view('company.leads_show',compact('lead'));
     }
 
-
-    /**
-     * Pick a lead.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function pick(Request $request)
     {
         $request->validate([

@@ -54,6 +54,10 @@
                                 <input type="number" class="form-control" name="price[]" step="0.01" required>
                             </div>
                             <div class="col-md-2">
+                                <label for="credit[]">Credit ($):</label>
+                                <input type="number" class="form-control" name="credit[]" step="0.01">
+                            </div>
+                            <div class="col-md-2">
                                 <button type="button" class="btn btn-danger" onclick="removeServiceForm(this)">
                                     <i class="fas fa-trash-alt"></i> Remove
                                 </button>

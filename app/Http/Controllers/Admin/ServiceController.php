@@ -36,6 +36,7 @@ class ServiceController extends Controller
             'name.*' => 'required',
             'description.*' => 'nullable',
             'price.*' => 'required|numeric',
+            'credit.*' => 'nullable|numeric|min:0',
             'lead_service_id.*' => 'required|exists:lead_services,id',
         ]);
 
@@ -45,6 +46,7 @@ class ServiceController extends Controller
                 'name' => $name,
                 'description' => $request->description[$index] ?? null,
                 'price' => $request->price[$index],
+                'credit' => $request->credit[$index],
                 'lead_service_id' => $request->lead_service_id[$index],
             ]);
         }
@@ -67,6 +69,7 @@ class ServiceController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
+            'credit.*' => 'nullable|numeric|min:0',
             'lead_service_id' => 'required|exists:lead_services,id'
         ]);
 
@@ -104,6 +107,7 @@ class ServiceController extends Controller
             'services.*.name' => 'required|string|max:255',
             'services.*.description' => 'nullable|string',
             'services.*.price' => 'required|numeric|min:0',
+            'services.*.credit' => 'required|numeric|min:0',
             'services.*.lead_service_id' => 'required|exists:lead_services,id',
         ]);
 
@@ -114,6 +118,5 @@ class ServiceController extends Controller
 
         return redirect()->route('services.index')->with('success', 'Services updated successfully.');
     }
-
 
 }

@@ -13,6 +13,7 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>Price</th>
+                    <th>Credit</th>
                     <th>Lead Service</th>
                 </tr>
             </thead>
@@ -28,6 +29,9 @@
                     </td>
                     <td>
                         <input type="number" name="services[{{ $service->id }}][price]" value="{{ $service->price }}" class="form-control" required>
+                    </td>
+                    <td>
+                        <input type="number" name="services[{{ $service->id }}][credit]" value="{{ $service->credit }}" class="form-control" required>
                     </td>
                     <td>
                         <select name="services[{{ $service->id }}][lead_service_id]" class="form-control" required>

@@ -30,6 +30,7 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>Price</th>
+                    <th>Credit</th>
                     <th>Lead Service</th>
                     <th>Actions</th>
                 </tr>
@@ -41,6 +42,7 @@
                     <td>{{ $service->name }}</td>
                     <td>{{ $service->description }}</td>
                     <td>{{ $service->price }}</td>
+                    <td>{{ $service->credit }}</td>
                     <td>{{ $service->leadService->name ?? 'N/A' }}</td>
                     <td>
                         <a href="{{ route('services.edit', $service->id) }}" class="btn btn-sm btn-info">Edit</a>

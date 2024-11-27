@@ -5,7 +5,7 @@
 
  class Service extends Model
  {
-     protected $fillable = ['lead_service_id', 'name', 'description', 'price'];
+     protected $fillable = ['lead_service_id', 'name', 'description', 'price','credit'];
 
      public function leadService()
      {

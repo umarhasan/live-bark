@@ -43,6 +43,10 @@
                             <input type="number" class="form-control" name="price" value="{{ $service->price }}" step="0.01" required>
                         </div>
                         <div class="form-group">
+                            <label for="price">Credit:</label>
+                            <input type="number" class="form-control" name="credit" value="{{ $service->credit }}" step="0.01" required>
+                        </div>
+                        <div class="form-group">
                             <label for="lead_service_id">Lead Service:</label>
                             <select class="form-control" name="lead_service_id" required>
                                 <option value="">Select Lead Service</option>
