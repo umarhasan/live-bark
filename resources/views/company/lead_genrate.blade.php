@@ -117,44 +117,15 @@
                 <!-- Showing Leads Count -->
                 <div class="lead-count">
                     Showing {{ $filteredLeadsCount }} leads
-                </div>
+                </div><br/><br/><br/>
                 <!-- Filter Button with Icon -->
-                <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#filterModal">
-                    <i class="fas fa-bars" style="font-size: 1.5rem;"></i> <!-- Filter Icon -->
-                </button>
             </div>
-
-            <!-- Filter Modal -->
-            <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="filterModalLabel">Filter Leads</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form method="GET" action="{{ route('company.lead_genrate') }}">
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="name">Lead Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" value="{{ request()->get('name') }}">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Apply Filter</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
+                <input type="text" class="form-control mt-3" id="leadSearch" placeholder="Search leads by name" onkeyup="filterLeads()">
             <!-- Today's Leads Section -->
-            <div class="list-group mt-3">
+            <div class="list-group mt-3" id="leadsList">
                 @foreach($todaysLeads as $lead)
                     <a href="#list-{{ $lead->id }}" class="list-group-item list-group-item-action lead-item" id="list-{{ $lead->id }}-list" data-toggle="list" role="tab" aria-controls="{{ $lead->name }}">
-                        <div class="lead-card">
+                        <div class="lead-card" data-name="{{ $lead->name }}">
                             <!-- Lead Name -->
                             <h5 class="lead-name"><strong>{{ $lead->name }}</strong></h5>
                             <!-- Service Info -->
@@ -185,7 +156,6 @@
                     <div class="header">
                         <strong>Showing {{ $filteredLeadsCount }} Leads</strong> <!-- Showing filtered leads -->
                     </div>
-
                     @foreach($leads as $lead)
                         <div class="tab-pane fade details-panel" id="list-{{ $lead->id }}" role="tabpanel" aria-labelledby="list-{{ $lead->id }}-list">
                             <div class="details-header">
@@ -266,4 +236,19 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function filterLeads() {
+        var searchInput = document.getElementById("leadSearch").value.toLowerCase();
+        var leads = document.querySelectorAll(".lead-card");
+
+        leads.forEach(function(lead) {
+            var leadName = lead.getAttribute("data-name").toLowerCase();
+            if (leadName.includes(searchInput)) {
+                lead.style.display = "block";
+            } else {
+                lead.style.display = "none";
+            }
+        });
+    }
+</script>
 @endsection
