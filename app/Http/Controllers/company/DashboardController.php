@@ -5,6 +5,8 @@ namespace App\Http\Controllers\company;
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
 use App\Models\LeadGenrate;
+use App\Models\Service;
+use App\Models\LeadService;
 use Illuminate\Http\Request;
 use Auth;
 use Hash;
@@ -35,49 +37,66 @@ class DashboardController extends Controller
     public function company_leads_genrate(Request $request) {
         // Initialize the query to get all leads (unfiltered) by default
         $query = LeadGenrate::with('service', 'service.leadService')->whereNull('assign_company_id');
-
-        // Apply filters if provided for all leads (including total leads)
+        // Apply filters if provided
         if ($request->has('name') && $request->name != '') {
             $query->where('name', 'like', '%' . $request->name . '%');
         }
-
-        // Get all leads based on the applied filters
-        $leads = $query->get();
-
-        // Filter today's leads separately and apply the 'name' filter specifically for today's leads
-        $today = now()->toDateString();
-        $todaysLeadsQuery = LeadGenrate::whereDate('created_at', $today)->whereNull('assign_company_id');
-
-        // Apply the name filter for today's leads if provided
-        if ($request->has('name') && $request->name != '') {
-            $todaysLeadsQuery->where('name', 'like', '%' . $request->name . '%');
-        }
-
-        // Get today's leads with the filter applied
-        $todaysLeads = $todaysLeadsQuery->get();
-
-        // Filtered leads count
-        $filteredLeadsCount = $leads->count();
-
-        // Get total leads excluding today's leads, applying the same filters
-        $totalLeadsQuery = LeadGenrate::with('service', 'service.leadService')
-            ->whereNull('assign_company_id')
-            ->whereDate('created_at', '!=', $today);
-
-        // Apply the name filter for total leads if provided
-        if ($request->has('name') && $request->name != '') {
-            $totalLeadsQuery->where('name', 'like', '%' . $request->name . '%');
-        }
-
-        // Get the latest 5 total leads excluding today's leads
-        $totalLeads = $totalLeadsQuery->latest()->take(5)->get();
-
-        return view('company.lead_genrate', compact('leads', 'todaysLeads', 'filteredLeadsCount', 'totalLeads'));
+        // Get paginated leads
+        $leads = $query->paginate(3); // Display 10 leads per page
+        $filteredLeadsCount = $query->count();
+        // Service & Lead Service
+        $service = Service::all();
+        $lead_service = LeadService::all();
+        return view('company.lead_genrate', compact('leads', 'filteredLeadsCount', 'service', 'lead_service'));
     }
 
+    public function leadPick($id){
+        
+
+        $leads = LeadGenrate::with('service', 'service.leadService')->where('id',$id)->whereNull('assign_company_id')->first();
+        $leads->assign_company_id = Auth::user()->id;
+        $leads->status = 1; 
+        $leads->save();
+        $leadCredit = $leads->service->credit ?? 0;
+
+        $user = Auth::user();
+        if ($user->credit >= $leadCredit) {
+        // Subtract the credit from the user's current credit
+        $user->credit -= $leadCredit;
+        $user->save();
+
+        // Return success message after successful operation
+        return redirect()->back()->with('success', 'Lead picked successfully and credit deducted.');
+        } else {
+            // If the user doesn't have enough credit, return an error
+            return redirect()->back()->with('error', 'Not enough credit to pick this lead.');
+        }
+
+    }
+
+    public function leadNotPick($id)
+    {
+        // Get the lead with its related service and leadService
+        $leads = LeadGenrate::with('service', 'service.leadService')->where('id', $id)->whereNull('assign_company_id')->first();
+
+        // If lead doesn't exist, redirect with an error
+        if (!$leads) {
+            return redirect()->back()->with('error', 'Lead not found or already assigned.');
+        }
+
+        // Set the lead's assign_company_id to null (not picked)
+        $leads->assign_company_id = null;  // Mark as not assigned
+        // Set the lead status to '0' indicating "Not Interested"
+        $leads->status = 0;
+        // Save the lead with updated status
+        $leads->save();
+        // Return success message after successful operation
+        return redirect()->back()->with('success', 'Lead marked as Not Interested successfully.');
+    }
 
     public function purchaseleads(){
             $user_id = Auth::user()->id;
+            dd($user_id);
             $leads = LeadGenrate::with('users')->where('assign_company_id',$user_id)->get();
         return view('company.purchased_lead',compact('leads'));
     }

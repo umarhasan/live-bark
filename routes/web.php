@@ -99,13 +99,16 @@ use App\Http\Controllers\company\VendorController;
         Route::get('leads/show/{id}', [companyDashboardController::class,'company_show'])->name('company.leads.show');
         Route::get('/change/password', [companyDashboardController::class, 'company_change_password'])->name('company.change_password');
         Route::post('/store/change/password', [companyDashboardController::class, 'company_store_change_password'])->name('company.store_change_password');
-
         Route::get('/profile', [companyDashboardController::class, 'companyProfile'])->name('company.profile');
         Route::post('/update/profile', [companyDashboardController::class, 'companyProfileUpdate'])->name('company.profile.update');
         Route::post('/edit/profile', [companyDashboardController::class, 'companyEditProfile'])->name('company.edit.profile');
         Route::post('/bank/detail', [companyDashboardController::class, 'companyBankDetail'])->name('company.bank.detail');
-
         Route::get('/puchase/package/{id}', [companyDashboardController::class, 'purchasePackageCreate'])->name('company.purchase.package');
+        // Purchase Leads
+        Route::get('/puchase/leads/assign/{id}', [companyDashboardController::class, 'leadPick'])->name('company.lead_pick');
+        Route::get('/puchase/leads/not-intrested/{id}', [companyDashboardController::class, 'leadNotPick'])->name('company.lead_not_pick');
+        
         Route::get('/puchase/leads', [companyDashboardController::class, 'purchaseleads'])->name('company.purchase_lead');
+        
         Route::post('/stripe', [companyDashboardController::class, 'stripePost'])->name('company.stripe.post');
     });
