@@ -37,7 +37,7 @@
                 e.preventDefault();
             });
         });
-    
+
   </script>
 
 <div class="content-wrapper no-select">

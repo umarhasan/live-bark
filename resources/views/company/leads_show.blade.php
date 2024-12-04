@@ -1,35 +1,7 @@
 @extends('company.layouts.app')
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<link href="{{ asset('assets/css/lead.css') }}" rel="stylesheet">
 @section('content')
-<style>
-    /* CSS to prevent text selection and copying */
-    .no-select {
-        -webkit-user-select: none; /* Chrome/Safari */
-        -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* IE10+ */
-        user-select: none; /* Standard */
-    }
-
-    /* Additional styles for better UI */
-    .status-badge {
-        padding: 0.5em 0.75em;
-        font-size: 0.9em;
-        font-weight: 700;
-    }
-</style>
-
-<script>
-    // JavaScript to prevent right-click and clipboard actions
-    document.addEventListener('DOMContentLoaded', function () {
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        }, false);
-        document.addEventListener('copy', function(e) {
-            e.preventDefault();
-        });
-    });
-</script>
-
 <div class="content-wrapper no-select">
     <section class="content-header">
         <div class="container-fluid">
@@ -54,117 +26,88 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <!-- Company Information on the right side -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Company Information</h3>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-bordered">
-                                <tr>
-                                    <th>Name</th>
-                                    <td>{{ $lead->users->name ?? 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Email</th>
-                                    <td>{{ $lead->users->email ?? 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Credit</th>
-                                    <td>
-                                        @if(isset($lead->users->credit) && $lead->users->credit == 0)
-                                            <span class="status-badge bg-warning">0</span>
-                                        @elseif(isset($lead->users->credit))
-                                            <span class="status-badge bg-success">{{ $lead->users->credit }}</span>
-                                        @else
-                                            <span class="status-badge bg-warning">0</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                <!-- Add additional company details here -->
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- Lead Information -->
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Lead Information</h3>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-bordered table-striped">
-                                <tr>
-                                    <th>Need</th>
-                                    <td>{{ $lead->need }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Business</th>
-                                    <td>{{ $lead->business }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Industry</th>
-                                    <td>{{ $lead->industry }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Live Website</th>
-                                    <td>{{ $lead->live_website }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Budget</th>
-                                    <td>{{ $lead->budget }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- Additional Lead Details Below -->
                 <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">More Lead Details</h3>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-bordered table-striped">
-                                <tr>
-                                    <th>Hiring Decision</th>
-                                    <td>{{ $lead->hire }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Name</th>
-                                    <td>{{ $lead->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Email</th>
-                                    <td>{{ $lead->email }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Phone</th>
-                                    <td>{{ $lead->phone }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Zip</th>
-                                    <td>{{ $lead->zip }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Address</th>
-                                    <td>{{ $lead->address }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Status</th>
-                                    <td>
-                                        <span class="status-badge {{ $lead->status == 1 ? 'bg-success' : 'bg-warning' }}">
-                                            {{ $lead->status == 1 ? 'Picked' : 'Not Picked' }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            </table>
+                    <div class="lead-list">
+                        <div class="details-panel lead-card"
+                            data-name="{{ strtolower($lead->name) }}"
+                            data-location="{{ strtolower($lead->address) }}"
+                            data-service="{{ strtolower($lead->service->name ?? '') }}"
+                            data-lead-service="{{ strtolower($lead->service->leadService->name ?? '') }}"
+                            data-status="{{ $lead->status === NULL ? 'null' : $lead->status }}"
+                            data-budget="{{ strtolower($lead->budget) }}">
+                            <div class="details-header">
+                                <h5>{{ $lead->name }} - {{ isset($lead->service->leadService) ? $lead->service->leadService->name : 'No Service' }}</h5>
+                            </div>
+                            <hr>
+                            <div class="lead-details">
+                                <p><strong>Location:</strong> <i class="fas fa-map-marker-alt icon"></i> {{ $lead->address }}</p>
+                                <p>
+                                    <strong>Contact:</strong>
+                                    <i class="fas fa-phone-alt icon"></i>
+                                    <span>
+                                        @if($lead->status == 1)
+                                            {{ $lead->phone }} <!-- Show full phone number -->
+                                        @else
+                                            {{ '+' . substr($lead->phone, 1, 3) }}xxx-xx-{{ substr($lead->phone, -2, 1) }}-xx
+                                        @endif
+                                    </span> |
+                                    <i class="fas fa-envelope icon"></i>
+                                    <span>
+                                        @if($lead->status == 1)
+                                            {{ $lead->email }} <!-- Show full email -->
+                                        @else
+                                            {{ substr($lead->email, 0, 2) }}xxxx{{ substr(strrchr($lead->email, "@"), 0) }}
+                                        @endif
+                                    </span>
+                                </p>
+                                <p><strong>Average Value:</strong> {{ $lead->budget }}</p>
+                                <p><strong>Status:</strong>
+                                    @if($lead->status == 1)
+                                        Pick
+                                    @else
+                                        Not Pick
+                                    @endif
+                                </p>
+                                <p><strong>Details:</strong></p>
+                                <ul>
+                                    <li><strong>Business:</strong> {{ $lead->business }}</li>
+                                    <li><strong>Need:</strong> {{ $lead->need }}</li>
+                                    <li><strong>Industry:</strong> {{ $lead->industry }}</li>
+                                    <li><strong>Live Website:</strong> {{ $lead->live_website }}</li>
+                                </ul>
+                                <p><strong>Credit:</strong> {{ $lead->service->credit ?? 'No Credit' }}</p>
+                                <div>
+                                    @if($lead->status === NULL)
+                                        <button class="btn btn-primary">
+                                            <a href="{{ route('company.lead_pick', $lead->id) }}">
+                                                <span style="color:white">{{ $lead->name }}</span>
+                                            </a>
+                                        </button>
+                                        <button class="btn btn-secondary btn-not-interested">
+                                            <a href="{{ route('company.lead_not_pick', $lead->id) }}">
+                                                <span style="color:white">Not interested</span>
+                                            </a>
+                                        </button>
+                                    @elseif($lead->status === 1)
+                                        <button class="btn btn-warning">
+                                            <a href="#">
+                                                <span style="color:white">Picked</span>
+                                            </a>
+                                        </button>
+                                    @elseif($lead->status === 0)
+                                        <button class="btn btn-danger">
+                                            <a href="#">
+                                                <span style="color:white">Not Picked</span>
+                                            </a>
+                                        </button>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     </section>
 </div>
+<script src="{{ asset('assets/js/lead.js')}}"></script>
 @endsection

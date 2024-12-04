@@ -21,11 +21,6 @@ use Stripe;
 
 class DashboardController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware(['auth']);
@@ -35,33 +30,41 @@ class DashboardController extends Controller
     }
 
     public function company_leads_genrate(Request $request) {
-        // Initialize the query to get all leads (unfiltered) by default
-        $query = LeadGenrate::with('service', 'service.leadService')->whereNull('assign_company_id');
-        // Apply filters if provided
-        if ($request->has('name') && $request->name != '') {
-            $query->where('name', 'like', '%' . $request->name . '%');
+        $user_id = Auth::user()->id;
+
+        // Get the perPage value from the request, default to 10 if not set
+        $perPage = $request->input('per_page', 10);
+
+        $query = LeadGenrate::with('service', 'service.leadService')
+                            ->whereNull('assign_company_id')
+                            ->orderBy('created_at', 'desc');
+
+        // If 'All' is selected, show all records without pagination
+        if ($perPage == 0) {
+            $leads = $query->get(); // Get all records
+            $filteredLeadsCount = $leads->count();
+        } else {
+            $leads = $query->paginate($perPage);
+            $filteredLeadsCount = $query->count();
         }
-        // Get paginated leads
-        $leads = $query->paginate(3); // Display 10 leads per page
-        $filteredLeadsCount = $query->count();
+
         // Service & Lead Service
         $service = Service::all();
         $lead_service = LeadService::all();
+
         return view('company.lead_genrate', compact('leads', 'filteredLeadsCount', 'service', 'lead_service'));
     }
 
     public function leadPick($id){
-        
 
-        $leads = LeadGenrate::with('service', 'service.leadService')->where('id',$id)->whereNull('assign_company_id')->first();
+        $leads = LeadGenrate::with('service', 'service.leadService')->where('id',$id)->first();
         $leads->assign_company_id = Auth::user()->id;
-        $leads->status = 1; 
+        $leads->status = 1;
         $leads->save();
         $leadCredit = $leads->service->credit ?? 0;
 
         $user = Auth::user();
         if ($user->credit >= $leadCredit) {
-        // Subtract the credit from the user's current credit
         $user->credit -= $leadCredit;
         $user->save();
 
@@ -73,39 +76,27 @@ class DashboardController extends Controller
         }
 
     }
-
     public function leadNotPick($id)
     {
-        // Get the lead with its related service and leadService
-        $leads = LeadGenrate::with('service', 'service.leadService')->where('id', $id)->whereNull('assign_company_id')->first();
-
-        // If lead doesn't exist, redirect with an error
+        $leads = LeadGenrate::with('service', 'service.leadService')->where('id', $id)->first();
         if (!$leads) {
             return redirect()->back()->with('error', 'Lead not found or already assigned.');
         }
-
-        // Set the lead's assign_company_id to null (not picked)
         $leads->assign_company_id = null;  // Mark as not assigned
-        // Set the lead status to '0' indicating "Not Interested"
         $leads->status = 0;
-        // Save the lead with updated status
         $leads->save();
-        // Return success message after successful operation
         return redirect()->back()->with('success', 'Lead marked as Not Interested successfully.');
     }
-
     public function purchaseleads(){
             $user_id = Auth::user()->id;
-            dd($user_id);
             $leads = LeadGenrate::with('users')->where('assign_company_id',$user_id)->get();
-        return view('company.purchased_lead',compact('leads'));
-    }
 
+            return view('company.purchased_lead',compact('leads'));
+    }
     public function company_show($id){
         $lead = LeadGenrate::with('users')->where('id',$id)->first();
         return view('company.leads_show',compact('lead'));
     }
-
     public function pick(Request $request)
     {
         $request->validate([
@@ -120,13 +111,10 @@ class DashboardController extends Controller
 
         return redirect()->route('company.leads.index')->with('success', 'Lead picked successfully.');
     }
-
     public function companyProfile()
     {
         return view('company.profile');
     }
-
-
     public function companyProfileUpdate(Request $request)
     {
         $id = Auth::user()->id;
@@ -150,9 +138,6 @@ class DashboardController extends Controller
         return redirect()->back();
 
     }
-
-
-
     public function companyEditProfile(Request $request){
 
         $user_id = Auth::user()->id;
@@ -176,7 +161,6 @@ class DashboardController extends Controller
         session::flash('success','Bank Detail Updated Successfully');
         return redirect()->back();
     }
-
     public function company_change_password()
     {
         return view('company.change-password');
@@ -202,8 +186,6 @@ class DashboardController extends Controller
 
         return redirect()->back()->with("success","Password changed successfully !");
     }
-
-
     public function purchasePackageCreate($id){
 
         if(Auth::user()->credit >= 50){
@@ -224,8 +206,7 @@ class DashboardController extends Controller
         return view('company.packages',compact('package','leads'));
 
        }
-       }
-
+    }
     public function stripePost(Request $request)
     {
         try {
@@ -267,6 +248,4 @@ class DashboardController extends Controller
         // Redirect back to the previous page
         return back();
     }
-
-
 }
