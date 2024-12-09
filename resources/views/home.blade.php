@@ -16,6 +16,7 @@
         integrity="sha512-6lLUdeQ5uheMFbWm3CP271l14RsX1xtx+J5x2yeIDkkiBpeVTNhTqijME7GgRKKi6hCqovwCoBTlRBEC20M8Mg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css">
     <link href="assets/css/style.css" rel="stylesheet" />
 
     <title>Bark</title>
@@ -111,6 +112,7 @@
                     </div>
                     <div class="col-sm-4 col-4 text-end">
                         <button class="custom-button1"><span>Login</span></button>
+                        <button class="custom-button"><span>Join As A Professional</span></button>
                     </div>
                 </div>
             </div>
@@ -129,12 +131,11 @@
         </div>
     </div>
 
-    <section class="bg1">
+    <section class="bg1" id="slider">
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
                     <h1 class="main-text">FIND THE PERFECT <br> PROFESSIONAL FOR YOU</h1>
-                    <button class="custom-button"><span>Join As A Professional</span></button>
                 </div>
             </div>
         </div>
@@ -803,7 +804,9 @@
         integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
     <script src="assets/js/script.js"></script>
+
     <script>
         $(document).ready(function () {
             // Fetch suggestions as the user types
@@ -977,8 +980,34 @@
             initializeOtherFunctionality('live_website', 'website-other');
             initializeOtherFunctionality('budget', 'budget-other');
             initializeOtherFunctionality('hire', 'hire-other');
+            // slider
+            const slider = document.getElementById("slider");
+
+            // List of background images
+            const backgrounds = [
+                "../assets/images/bg1.png",
+                "../assets/images/bg2.png",
+                "../assets/images/bg3.png",
+            ];
+
+            let currentIndex = 0;
+
+            // Function to change the background image
+            function changeBackground() {
+                slider.style.backgroundImage = `url('${backgrounds[currentIndex]}')`;
+                currentIndex = (currentIndex + 1) % backgrounds.length; // Move to the next image, loop back if at the end
+            }
+
+            // Change the background every 5 seconds
+            setInterval(changeBackground, 5000);
+
+            // Set the initial background image
+            changeBackground();
+
         });
     </script>
+
+
 </body>
 
 </html>
